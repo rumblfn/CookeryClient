@@ -1,0 +1,223 @@
+*{
+    outline: none;
+}
+@keyframes shutting {
+    0% {
+      transform: scale(1);
+      height: 50px;
+    }
+  
+    100% {
+      transform: scale(0);
+      height: 0;
+    }
+  }
+
+.gradient-text {
+    color: black;
+    font-family: 'Kaushan Script', 'Roboto', 'Avenir Next', sans-serif;
+}
+.heading{
+    font-size: 40px;
+}
+.bottom-heading{
+    font-size: 30px;
+}
+.container{
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 2%;
+}
+
+.products-container{
+    display: flex;
+    justify-content: space-between;
+}
+
+.food-input{
+    width: 250px;
+    padding: 4px;
+    border: none;
+    border-bottom: 1px solid #000;
+}
+.productsList-container{
+    width: 500px;
+}
+.lists-headings{
+    font-size: 30px;
+    margin-top: 0;
+}
+.productsList{
+    overflow: auto;
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+    height: 300px;
+    list-style-type: none;
+    width: 300px;
+    padding: 15px;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.product{
+    font-size: 30px;
+    align-items: center;
+    padding: 3px;
+    padding-right: 40px;
+    display: flex;
+    height: 50px;
+    border: 1px solid rgb(102, 159, 224);
+    border-radius: 4px;
+    margin-bottom: 3px;
+    justify-content: space-between;
+    transition: all 0.2s;
+}
+.product > img{
+    height: 50px;
+}
+.product:hover{
+    transform: scale(1.02);
+}
+
+.addedProducts{
+    width: 500px;
+    height: 300px;
+}
+.addedProductsList{
+    overflow: auto;
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+    height: 300px;
+    list-style-type: none;
+    width: 300px;
+    padding: 15px;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+.removeButton{
+    color: white;
+    border: none;
+    border-radius: 50%;
+    background-color: rgb(224, 13, 13);
+    padding: 5px;
+    width: 30px;
+    height: 30px;
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 2px 10px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+}
+.noFound{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+.sth{
+    animation: shutting 0.3s ease 0s 1 normal forwards;
+}
+.productsResultBox{
+    margin-top: 40px;
+    border-radius: 3px;
+    display: flex;
+    padding: 8px;
+    overflow: auto;
+    box-shadow: rgb(204, 219, 232) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.5) -3px -3px 6px 1px inset;
+}
+
+.productsResultBox::-webkit-scrollbar {
+    height: 10px;
+}
+.productsResultBox::-webkit-scrollbar-track {
+    background-color: transparent;
+}
+.productsResultBox::-webkit-scrollbar-thumb {
+    border-radius: 20px;
+    background-color: rgb(148, 148, 219);
+} 
+.productsResultBox::-webkit-scrollbar-thumb:hover{
+    background-color: rgb(120, 120, 212);
+}
+
+.productsResult{
+    box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+    border-radius: 6px;
+    width: 150px;
+    height: 150px;
+    margin-right: 20px;
+    flex-shrink: 0;
+    transition: all 0.1s;
+}
+.productsResult:hover{
+    transform: scale(1.03);
+}
+
+
+/* Products */
+.products_container{
+    margin-top: 30px;
+    padding: 0 40px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 300px 300px 300px;
+    grid-column-gap: 2%;
+    grid-row-gap: 30px;
+
+}
+.product_box{
+    box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 4px;
+    transition: all 0.3s;
+}
+.product_box:hover{
+    transform: scale(1.015);
+}
+
+/* Footer */
+
+.hr{
+    border: none;
+    border-top: 1px solid #000;
+}
+.footer-box{
+    display: flex;
+    align-items: flex-start;
+    width: 100%;
+    justify-content: space-around;
+}
+.instImg{
+    width: 200px;
+}
+.products-link{
+    display: block;
+    margin-top: 20px;
+    width: fit-content;
+    font-size: 20px;
+}
+
+.menuBar {
+    background-color: black;
+    width: 100vw;
+    height: 100vh;
+    z-index: 2;
+    position: absolute;
+    top: 64px;
+    left: 100vw;
+    transition: all 0.3s;
+}
+
+.menuBar2 {
+    background-color: black;
+    width: 100vw;
+    height: 100vh;
+    z-index: 2;
+    position: absolute;
+    top: 64px;
+    left: 0;
+    transition: all 0.3s;
+}
+
+
+
+
+
+
+
+

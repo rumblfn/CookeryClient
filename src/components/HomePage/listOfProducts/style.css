@@ -1,0 +1,11 @@
+.block {
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+    align-items: center;
+    padding: 8px;
+}
+
+.block > p {
+    margin: auto 0;
+}

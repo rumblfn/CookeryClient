@@ -1,0 +1,9 @@
+input[type="file"] {
+    display: none;
+}
+
+.custom-file-upload__post {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
