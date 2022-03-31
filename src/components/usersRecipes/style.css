@@ -1,0 +1,7 @@
+@media (min-width: 769px) {
+    .profile-recipes-view {
+        position: relative;
+        left: -25%;
+        width: 188%;
+    }
+}

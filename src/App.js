@@ -30,7 +30,7 @@ export const App = () => {
                             <ProfilePageRoutes />
                         </PrivateRoute>
                     } />
-                    <Route path="/*" element={<HomePage />} />
+                    <Route path="/*" element={<HomePage/>} />
                 </Routes>
             </div>
             </div>

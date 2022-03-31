@@ -4,29 +4,45 @@ import { recipesConnect } from "../../connect/recipes/recipes";
 import { Link } from 'react-router-dom';
 import Button from "@mui/material/Button";
 import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import './style.css';
+import { useRef } from 'react';
+import Paper from '@mui/material/Paper';
 
 
-export const Widget = recipesConnect(({userId, recipeData, images, description, setDescription, addNewRecipe}) => {
+export const Widget = recipesConnect(({userId, setImages, recipeData, images, description, setDescription, addNewRecipe}) => {
+    const inputRef = useRef(null)
     function encodeImageFileAsURL(element) {
         let file = element.files[0];
         let reader = new FileReader();
         reader.onloadend = function() {
-            images.push(reader.result)
+            setImages(prevState => [...prevState, reader.result])
         }
-        reader.readAsDataURL(file);}
+        reader.readAsDataURL(file);
+    }
     
     const handleUploadedFileImage = (e) => {
-        encodeImageFileAsURL(e.target)
+        try {
+            encodeImageFileAsURL(e.target)
+        } catch {
+            console.log('error')
+        }
+    }
+    
+    useEffect(() => {
+        console.log(images)
+    }, [images])
+
+    const inputClick = () => {
+        inputRef.current.click()
     }
 
     return (
         <div style={{padding: '16px', display: 'flex', flexDirection: 'column'}}>
             <div style={{display: 'flex', marginBottom: '16px'}}>
                 <Link to='/profile/create/checkProducts'>
-                    <Button 
+                    <Button
                         style={{
                             borderColor: "#000000",
                             color: '#000000',
@@ -34,7 +50,7 @@ export const Widget = recipesConnect(({userId, recipeData, images, description, 
                         variant="outlined" 
                         type="submit"
                     >
-                        <ArrowBackRoundedIcon/> Вернуться
+                        <ArrowBackRoundedIcon/>
                     </Button>
                 </Link>
                 <Link to='/profile'>
@@ -57,25 +73,32 @@ export const Widget = recipesConnect(({userId, recipeData, images, description, 
                     </Button>
                 </Link>
             </div>
-            <div style={{display: 'flex', flexDirection: 'column'}}>
-            <div style={{background: 'rgba(0,0,0,.3)', borderRadius: '5px',
-                width: '100%', height: '50vh', border: '2px solid black',
-                display: 'flex', justifyContent: 'center', flexDirection: 'column',
-                alignItems: 'center',
-            }}>
-                <Button
+            <div style={{width: '100%', height: '100%'}}>
+                <Button onClick={inputClick}
                     style={{
-                        margin: '4%',
+                        margin: '0 4% 3%',
                         borderColor: "#000000",
                         color: '#000000',
                     }}
                     variant="outlined" 
                     type="submit"
                 >Загрузить изображение
-                    <label htmlFor="file-upload__post" className="custom-file-upload__post"/>
                 </Button>
-                <input id="file-upload__post" type="file" onChange={e => {handleUploadedFileImage(e)}}/>
+                <input ref={inputRef} id="file-upload__post" type="file" onChange={e => {handleUploadedFileImage(e)}}/>
+                <div style={{display: 'grid', gap: '12px', gridTemplateColumns: '1fr 1fr'}}>
+                    {
+                        images.map(item => (
+                            <Paper elevation={3} className="paper-recipe-box" style={{aspectRatio: '1 / 1',
+                                borderRadius: '7px', overflow: 'hidden', position: 'relative',
+                                justifyContent: 'space-between', display: 'flex', alignItems: 'center', flexDirection: 'column'
+                            }}>
+                                <img style={{width: '100%', height: '100%', objectFit: 'cover'}} src={item} alt='food'/>
+                            </Paper>
+                        ))
+                    }
+                </div>
             </div>
+            <div style={{display: 'flex', flexDirection: 'column'}}>
             <TextareaAutosize
                 style={{border: 'none', margin: '10px 16px', maxHeight: '40vh'}}
                 aria-label="textarea"
@@ -97,6 +120,6 @@ export const ToPost = () => {
     const userId = useSelector(state => state.user.id)
 
     return (
-        <Widget userId={userId} recipeData={recipeData} images={images} description={description} setDescription={setDescription}/>
+        <Widget userId={userId} recipeData={recipeData} images={images} setImages={setImages} description={description} setDescription={setDescription}/>
     )
 }

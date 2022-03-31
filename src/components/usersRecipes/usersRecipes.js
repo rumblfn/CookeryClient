@@ -8,9 +8,8 @@ import { setRecipesWithAPI } from "../../store/recipes";
 import CircularProgress from '@mui/material/CircularProgress';
 import Button from "@mui/material/Button";
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
+import './style.css';
 
-const paperCss = {borderRadius: '7px', padding: '10px', height: '100px', textAlign: 'center', display: 'flex', alignItems: 'center', flexDirection: 'column'}
-const imageCss = {borderRadius: '5px', maxHeight: '80%', maxWidth: '80%'}
 const loadingDivCss = {textAlign: 'center', padding: '32px 0'}
 
 export const Widget = ({userRecipes, largePhone}) => {
@@ -19,7 +18,7 @@ export const Widget = ({userRecipes, largePhone}) => {
     const selector = useSelector((state) => state.recipes.userRecipes);
     const dispatch = useDispatch()
 
-    const css = {display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '2%'}
+    const css = {display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px'}
     if (largePhone) { css.gridTemplateColumns = '1fr 1fr' }
 
     useEffect(() => {
@@ -58,12 +57,20 @@ export const Widget = ({userRecipes, largePhone}) => {
                     <div style={loadingDivCss}>
                         <CircularProgress sx={{color: 'black'}}/>
                     </div> 
-                    :<div style={css}>
+                    :<div style={css} className="profile-recipes-view">
                         {Object.values(userRecipes).map(item => (
                         <Link key={item.id} to={`/recipes/${item.id}/profile`}>
-                            <Paper elevation={3} style={paperCss}>
-                                <img style={imageCss} src={item.images[0]} alt='food'/>
-                                <p>{item.title}</p>
+                            <Paper elevation={3} className="paper-recipe-box" style={{
+                                borderRadius: '7px', height: '200px', overflow: 'hidden', position: 'relative',
+                                justifyContent: 'space-between', display: 'flex', alignItems: 'center', flexDirection: 'column'
+                            }}>
+                                {item.images[0] ? 
+                                    <img style={{width: '100%', height: '100%', objectFit: 'cover'}} src={item.images[0]} alt='food'/>
+                                    : <div style={{backgroundColor: 'black', width: '100%', height: '100%', position: 'relative'}}/>
+                                }
+                                <div class="overlay">
+                                    <div class="text">{item.title}</div>
+                                </div>
                             </Paper>
                         </Link>))}
                     </div> 
