@@ -15,7 +15,6 @@ export const WidgetMain = selectedProductsConnect(({products, lstOfProductsNames
     const dispatch = useDispatch()
 
     const data = useSelector(state => state.newRecipe)
-    console.log(data)
 
     const checkForm = () => {
         if (title && time && Object.keys(products).length) {

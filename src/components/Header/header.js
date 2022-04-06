@@ -91,16 +91,11 @@ export const Header = () => {
                     </div> :
                     <div>
                         <NavBarItem link={"/login"} text={"Login / "} setBarActive={setBarActive}/>
-                        <NavBarItem link={"/allRecipes"} text={"All recipes / "} setBarActive={setBarActive}/>
                         <NavBarItem link={"/profile"} text={"Profile / "} setBarActive={setBarActive}/>
                     </div>}
                 </Toolbar>
                 <Overlay open={bar_active}>
                     <OverlayMenu open={bar_active}>
-                        <Item>
-                            <NavBarItem link={"/allRecipes"} text={"All recipes"} menu={true} 
-                                        setBarActive={setBarActive} not_show={!bar_active}/>
-                        </Item>
                         <Item>
                             <NavBarItem link={"/profile"} text={"Profile"} menu={true} 
                                         setBarActive={setBarActive} not_show={!bar_active}/>

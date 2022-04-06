@@ -29,6 +29,8 @@ export const WidgetSelectedProducts = () => {
         }
         dispatch(setUserRecipeNewDataReducer({productsWithCount: newProds}))
     }, [])
+    const selectedRecipes = useSelector(state => state.products.selectedProducts)
+    console.log(selectedRecipes)
     
     return (
         <div style={{padding: '16px'}}>

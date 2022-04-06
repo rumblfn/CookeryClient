@@ -1,5 +1,6 @@
 import { useParams } from "react-router-dom";
 import { RecipeInfo } from "../../components/Recipe/recipe";
+import React from "react";
 
 
 export const RecipesPage = () => {

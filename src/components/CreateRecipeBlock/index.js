@@ -24,7 +24,7 @@ const css_desc_block = {
     backgroundColor: '#FFFFFF',
     position: 'absolute',
     top: '10%',
-    width: '50%',
+    width: '80%',
     minHeight: '60vh',
     borderRadius: '20px',
 }

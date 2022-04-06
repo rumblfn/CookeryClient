@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import '../Login/loginAndSignUpStyles.css';
@@ -15,6 +15,7 @@ export const Registration = () => {
     const [passwordError, setPasswordError] = useState("");
     const [emailError, setEmailError] = useState("");
     const mediumRegex = new RegExp("^(((?=.*[A-Z])(?=.*[0-9])(?=.*[a-z])))(?=.{8,})");
+    const navigate = useNavigate()
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -31,13 +32,15 @@ export const Registration = () => {
     };
 
     const signUp = () => {
-        Axios.post('https://cookery-app.herokuapp.com/users/insert', {
+        Axios.post('/users/insert', {
             userName: name,
             userEmail: email,
             userPassword: password,
         }).then((res) => {
             if (res.data.errno === 1062) {
                 setEmailError('Пользователь с такой почтой уже существуйет, войдите')
+            } else if (!res.data) {
+                navigate('/login')
             }
         })
     }

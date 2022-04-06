@@ -13,7 +13,7 @@ import { addProductsWithAPI } from '../../../store/products';
 import { nanoid } from 'nanoid';
 
 
-const Widget = productsConnect(({isLoading, toggleClass, setInputValue, inputValue, checkEmail, products, changeSelectedState, filterState, marginRightProp, maxHeightProp}) => {
+const Widget = productsConnect(({isLoading, toggleClass, setInputValue, inputValue, checkEmail, products, filterState, changeSelectedState, marginRightProp, maxHeightProp}) => {
     let default_size = '70vh'
 
     const checkProduct = (item) => {
@@ -27,10 +27,9 @@ const Widget = productsConnect(({isLoading, toggleClass, setInputValue, inputVal
     }
 
     const addNewProduct = () => {
-        Axios.post('https://cookery-app.herokuapp.com/products/insert', {
+        Axios.post('/products/insert', {
             productName: inputValue
         }).then(() => {
-            console.log(`${inputValue} added`);
         })
     }
 
@@ -62,12 +61,15 @@ const Widget = productsConnect(({isLoading, toggleClass, setInputValue, inputVal
             <div style={{textAlign: 'center', padding: '32px 0'}}>
                 <CircularProgress sx={{color: 'black'}}/>
             </div> :
-            (Object.keys(products).map(elKey => (
+            (Object.keys(products).length ?
+                Object.keys(products).map(elKey => (
                 <div key={nanoid()} className="block" onClick={() => checkProduct(elKey)}>
                     <p>{products[elKey].name}</p>
                     <CheckIcon hidden={!products[elKey].selected}/>
                 </div>))
-            )}
+            : <div style={{margin: '32px', textAlign: 'center'}}>
+                <p>Продукт не найден</p>
+            </div>)}
             </div>
         </Paper>
         </>
@@ -91,13 +93,17 @@ export const ListOfProducts = ({toggleClass}) => {
 
         if (Object.keys(selector).length === 0) {
             setIsLoading(true)
-            Axios.get('https://cookery-app.herokuapp.com/products/get').then((response) => {
+            Axios.get('/products/get').then((response) => {
+                let index = 0
                 for (let prod of response.data) {
                     if (prod.name) {
-                        initialProducts[prod.id] = {
+                        initialProducts[index] = {
+                            id: prod.id,
                             name: prod.name,
-                            selected: Boolean(+prod.selected)
+                            selected: Boolean(+prod.selected),
+                            usage: prod.usage
                         }
+                        index += 1
                     }
                 }
                 dispatch(addProductsWithAPI(initialProducts))

@@ -1,5 +1,6 @@
-import { ADD_NEW_RECIPE, SET_RECIPES, SET_RECIPES_ALL, CLEAR_REDUCER, STAR_RECIPE, SET_STARRED_RECIPES } from './actions';
+import { ADD_NEW_RECIPE, SET_RECIPES, SET_RECIPES_ALL, CLEAR_REDUCER, STAR_RECIPE, SET_STARRED_RECIPES, setRecipeImages, SET_RECIPE_IMAGES } from './actions';
 import Axios from 'axios';
+import { nanoid } from 'nanoid';
 
 const initialState = {
     userRecipes: {},
@@ -40,7 +41,14 @@ export const recipesReducer = (state = initialState, action) => {
                 }
             }
         }
+        case SET_RECIPE_IMAGES: {
+            return {
+                ...state,
+                userRecipes: {...state.userRecipes, [action.payload.id]: {...state.userRecipes[action.payload.id], images: [...action.payload.images]}}
+            }
+        }
         case SET_RECIPES_ALL: {
+            console.log(action.payload)
             const settedRecipes = {}
             action.payload.forEach((item) => {
                 settedRecipes[item.id] = {
@@ -61,22 +69,25 @@ export const recipesReducer = (state = initialState, action) => {
         }
         case SET_STARRED_RECIPES: {
             const settedUserStarredRecipes = {}
-            action.payload.forEach((item) => {
-                settedUserStarredRecipes[item.id] = {
-                    comments: JSON.parse(item.comments),
-                    cook: JSON.parse(item.cook),
-                    description: JSON.parse(item.description),
-                    id: item.id,
-                    images: JSON.parse(item.images) || [],
-                    lstOfProducts: JSON.parse(item.lstOfProducts),
-                    products: JSON.parse(item.products),
-                    rating: item.rating,
-                    time: item.time,
-                    title: item.title,
-                    userId: item.userId
-                }
-            })
-            return {...state, starred_recipes: {...settedUserStarredRecipes}}
+            if (action.payload) {
+                action.payload.forEach((item) => {
+                    settedUserStarredRecipes[item.id] = {
+                        comments: JSON.parse(item.comments),
+                        cook: JSON.parse(item.cook),
+                        description: JSON.parse(item.description),
+                        id: item.id,
+                        images: JSON.parse(item.images) || {},
+                        lstOfProducts: JSON.parse(item.lstOfProducts),
+                        products: JSON.parse(item.products),
+                        rating: item.rating,
+                        time: item.time,
+                        title: item.title,
+                        userId: item.userId
+                    }
+                })
+                return {...state, starred_recipes: {...settedUserStarredRecipes}}
+            }
+            return state
         }
         case SET_RECIPES: {
             const settedUserRecipes = {}
@@ -86,7 +97,7 @@ export const recipesReducer = (state = initialState, action) => {
                     cook: JSON.parse(item.cook),
                     description: JSON.parse(item.description),
                     id: item.id,
-                    images: JSON.parse(item.images) || [],
+                    images: JSON.parse(item.images) || {},
                     lstOfProducts: JSON.parse(item.lstOfProducts),
                     products: JSON.parse(item.products),
                     rating: item.rating,
@@ -98,11 +109,24 @@ export const recipesReducer = (state = initialState, action) => {
             return {...state, userRecipes: {...state.userRecipes, ...settedUserRecipes}}
         }
         case ADD_NEW_RECIPE: {
-            Axios.post('https://cookery-app.herokuapp.com/reciepes/insert', {
-                ...action.payload, images: JSON.stringify(action.payload.images)
-            }).then(() => {})
-            return {...state,
-                userRecipes: {...state.userRecipes, [action.payload.id]: action.payload}}
+            const images = {}
+            const paths = []
+            Object.keys(action.payload.images).forEach(item => {
+                let image_path = `${nanoid(8)}${item}`
+                paths.push(image_path)
+                images[image_path] = action.payload.images[item]
+            })
+            Axios.post('/reciepes/insert', {
+                ...action.payload, images: JSON.stringify(images)
+            }).then((res) => {
+                if (res) {
+                    setRecipeImages({id: action.payload.id, images: [...res.data]})
+                }
+            })
+            return {
+                ...state,
+                userRecipes: {...state.userRecipes, [action.payload.id]: {...action.payload, images: [...paths]}}
+            }
         }
         case CLEAR_REDUCER: {
             return {...state, userRecipes: {}}

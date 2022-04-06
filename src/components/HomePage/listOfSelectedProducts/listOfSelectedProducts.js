@@ -51,13 +51,15 @@ export const SelectedProducts = selectedProductsConnect(({dispatch, setToggleCla
     }
     
     if (creating) {
-        css = {display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '2%',
-            padding: '2%', marginBottom: '32px', boxShadow: '0px 5px 10px 2px rgba(34, 60, 80, 0.2)',
-            maxHeight: '60vh', overflowY: 'scroll', borderRadius: '15px'};
-        css_paper = {borderRadius: '7px', padding: '10px',
+        css = {display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr', gap: '12px',
+            padding: '8px', marginBottom: '32px', borderRadius: '15px'};
+        css_paper = {padding: '10px',
             display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}
+        if (useMediaQuery('(max-width:1200px)')) {
+            css.gridTemplateColumns = '1fr 1fr 1fr 1fr'
+        }
         if (useMediaQuery('(max-width:1024px)')) {
-            css.gridTemplateColumns = '1fr 1fr'
+            css.gridTemplateColumns = '1fr 1fr 1fr'
         }
         if (useMediaQuery('(max-width:768px)')) {
             css.gridTemplateColumns = '1fr 1fr 1fr'
@@ -86,8 +88,7 @@ export const SelectedProducts = selectedProductsConnect(({dispatch, setToggleCla
             return (
                 <div style={css}>
                     {Object.keys(products).map(elKey => (
-                        <Paper elevation={2} style={css_paper}
-                                key={nanoid()}>
+                        <Paper elevation={2} style={css_paper} key={nanoid()}>
                             <div className='button'>
                                 <p style={{marginTop: 'auto', marginBottom: 'auto'}}>{products[elKey].name}</p>
                                 <Button className='closeIcon' onClick={() => checkProduct(elKey)} 
@@ -127,10 +128,8 @@ export const SelectedProducts = selectedProductsConnect(({dispatch, setToggleCla
 })
 
 export const ListOfSelectedProducts = ({creating, setToggleClass}) => {
-    const [iconImage, setIconImages] = useState(true)
     const dispatch = useDispatch()
     return (<>
-            <ShowSelectedProducts iconImage={iconImage} setIconImages={setIconImages}/>
-            <SelectedProducts dispatch={dispatch} setToggleClass={setToggleClass} creating={creating} show={iconImage}/>
+            <SelectedProducts dispatch={dispatch} setToggleClass={setToggleClass} creating={creating} show={false}/>
         </>)
 }

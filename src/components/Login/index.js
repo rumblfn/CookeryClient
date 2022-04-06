@@ -38,7 +38,7 @@ export const Login = () => {
             setError('Введите пароль')
         } else {
             try {
-                await Axios.get('https://cookery-app.herokuapp.com/users/get', {
+                await Axios.get('/users/get', {
                     params: {
                         userEmail: email,
                         userPassword: password,

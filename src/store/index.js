@@ -3,17 +3,17 @@ import { productsReducer } from './products';
 import { recipesReducer } from './recipes';
 import { userReducer } from './user/reducer';
 import { userRecipeReducer } from './newRecipe/reducer';
-import { composeWithDevTools } from 'redux-devtools-extension';
-import thunk from 'redux-thunk';
 import storage from 'redux-persist/lib/storage';
-import persistReducer from "redux-persist/es/persistReducer";
-import persistStore from "redux-persist/es/persistStore";
+import {composeWithDevTools} from "redux-devtools-extension";
+import thunk from "redux-thunk";
+// import persistReducer from "redux-persist/es/persistReducer";
+// import persistStore from "redux-persist/es/persistStore";
 
-const persistConfig = {
-    key: 'root',
-    storage,
-    whitelist: ['user']
-}
+// const persistConfig = {
+//     key: 'root',
+//     storage,
+//     whitelist: ['user']
+// }
 
 const rootReducer = combineReducers({
     products: productsReducer,
@@ -22,15 +22,11 @@ const rootReducer = combineReducers({
     newRecipe: userRecipeReducer,
 })
 
-const persistedReducer = persistReducer(persistConfig, rootReducer)
-
-const fetchMiddleWare = store => next => action => {
-    console.log(action)
-}
+// const persistedReducer = persistReducer(persistConfig, rootReducer)
 
 export const store = createStore(
-    persistedReducer,
+    rootReducer,
     composeWithDevTools(applyMiddleware(thunk))
 )
 
-export const persistedStore = persistStore(store)
+// export const persistedStore = persistStore(store)

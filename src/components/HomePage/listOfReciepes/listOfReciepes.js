@@ -3,12 +3,12 @@ import Paper from '@mui/material/Paper';
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import Axios from 'axios';
-import { Search } from '../../../components/searchLine/index'
 import { useSelector } from 'react-redux';
+import "./style.css";
 
-let css = {display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2%', marginTop: '48px'}
+let css = {display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginTop: '16px'}
 
-export const Widget = recipesConnect(({searchField, setSearchField, format, allRecipesBool, userRecipes, setRicepes, setIsLoading, recipes, selectedProducts}) => {
+export const Widget = recipesConnect(({otherRecipes, timeFilter, searchField, format, allRecipesBool, userRecipes, setRicepes, setIsLoading, recipes, selectedProducts}) => {
     let newRecipes = {}
 
     if (allRecipesBool) {
@@ -37,9 +37,14 @@ export const Widget = recipesConnect(({searchField, setSearchField, format, allR
         useEffect(() => {
             if (Object.keys(recipes).length <= Object.keys(userRecipes).length) {
                 setIsLoading(true)
-                Axios.get('https://cookery-app.herokuapp.com/recipes/get').then((response) => {
-                    setRicepes(response.data)
-                    setIsLoading(false)})}}, [])
+                Axios.get('/recipes/get')
+                    .then((response) => {
+                        setRicepes(response.data)
+                        setIsLoading(false)
+                    }
+                )
+            }
+        }, [])
     
         const isEmpty = (obj) => { for (let key in obj) { return true } return false }
     
@@ -53,45 +58,81 @@ export const Widget = recipesConnect(({searchField, setSearchField, format, allR
             for (let recipe in recipes) {
                 if (checkProductsInRecipe(recipes[recipe], selectedProducts)) {
                     newRecipes[recipe] = {...recipes[recipe]}}}}}
-    
-    const setSearchFieldFunc = (val) => {
-        setSearchField(val)
+
+    const numberSort = function (a, b) {
+        return a - b;
+    };
+
+    const arr = []
+
+    const recipesPreparation = [...Object.values(newRecipes)]
+    const recipesIds = []
+    for (let recipe of recipesPreparation) {
+        recipesIds.push(recipe.id)
     }
 
-    useEffect(() => {
-        console.log(searchField)
-    }, [searchField])
+    if (timeFilter !== 0) {
+        recipesPreparation.sort(function (recipe1, recipe2) {
+            const splitted_time1 = recipe1.time.split(':')
+            const splitted_time2 = recipe2.time.split(':')
+            const number1 = +splitted_time2[0] * 60 + +splitted_time2[1]
+            const number2 = +splitted_time1[0] * 60 + +splitted_time1[1]
+            if (timeFilter === -1) {
+                return numberSort(number1, number2)
+            }
+            return numberSort(number2, number1)
+        })
+    }
 
     return (
         <div>
-            { allRecipesBool ? 
-            <Search setSearchFieldFunc={setSearchFieldFunc} format={format}/> 
-            : null }
             <div style={css}>
-                {Object.values(newRecipes).map(item => (
-                (allRecipesBool === 'starred' ? 
-                <Link to={`/recipes/${item.id}/starred`} key={item.id}>
-                    <Paper elevation={3} style={{borderRadius: '7px', padding: '10px', height: '200px', justifyContent: 'space-between', display: 'flex', alignItems: 'center', flexDirection: 'column'}} >
-                        <img style={{borderRadius: '5px', maxHeight: '80%', maxWidth: '80%'}} src={item.images[0]} alt='food'/>
-                        <p>{item.title}</p>
-                    </Paper>
-                </Link>
-                :<Link to={`/recipes/${item.id}/all`} key={item.id}>
-                    <Paper elevation={3} style={{borderRadius: '7px', padding: '10px', height: '200px', justifyContent: 'space-between', display: 'flex', alignItems: 'center', flexDirection: 'column'}} >
-                        <img style={{borderRadius: '5px', maxHeight: '80%', maxWidth: '80%'}} src={item.images[0]} alt='food'/>
-                        <p>{item.title}</p>
-                    </Paper>
-                </Link>)))}
+                {recipesPreparation.map(item => (item.title.toLowerCase().includes(searchField) ?
+                    <Link to={`/recipes/${item.id}/${allRecipesBool === 'starred' ? 'starred' : 'all'}`} key={item.id}>
+                        <Paper elevation={3} className="paper-recipe-box" style={{
+                            borderRadius: '7px', height: '200px', overflow: 'hidden', position: 'relative',
+                            justifyContent: 'space-between', display: 'flex', alignItems: 'center', flexDirection: 'column'
+                        }}>
+                            {Object.values(item.images) ? 
+                                <img style={{width: '100%', height: '100%', objectFit: 'cover'}} src={`/reciepes/${item.images[0]}`} alt='food'/>
+                                : <div style={{backgroundColor: 'black', width: '100%', height: '100%', position: 'relative'}}/>
+                            }
+                            <div className="overlay">
+                                <div className="text">{item.title}</div>
+                            </div>
+                        </Paper>
+                    </Link>
+                : null))}
+            </div>
+            <div>
+                {otherRecipes.length !== 0 && <h4 style={{marginTop: '36px'}}>Другие рецепты...</h4>}
+                <div style={css}>
+                    {
+                        otherRecipes.filter(item => !recipesIds.includes(item.id)).map(item => (
+                            <Link to={`/recipes/${item.id}/${allRecipesBool === 'starred' ? 'starred' : 'all'}`} key={item.id}>
+                                <Paper elevation={3} className="paper-recipe-box" style={{
+                                    borderRadius: '7px', height: '200px', overflow: 'hidden', position: 'relative',
+                                    justifyContent: 'space-between', display: 'flex', alignItems: 'center', flexDirection: 'column'
+                                }}>
+                                    {Object.values(item.images) ?
+                                        <img style={{width: '100%', height: '100%', objectFit: 'cover'}} src={`/reciepes/${item.images[0]}`} alt='food'/>
+                                        : <div style={{backgroundColor: 'black', width: '100%', height: '100%', position: 'relative'}}/>
+                                    }
+                                    <div className="overlay">
+                                        <div className="text">{item.title}</div>
+                                    </div>
+                                </Paper>
+                            </Link>
+                    ))}
+                </div>
             </div>
         </div>
     )
 })
 
-export const ListOfReciepes = ({format, allRecipesBool}) => {
+export const ListOfReciepes = ({otherRecipes, format, allRecipesBool, timeFilter, searchField}) => {
     const [isLoading, setIsLoading] = useState(false);
-    const [searchField, setSearchField] = useState('')
 
-    return <Widget format={format} allRecipesBool={allRecipesBool} 
-                isLoading={isLoading} setIsLoading={setIsLoading}
-                searchField={searchField} setSearchField={setSearchField}/>
+    return <Widget otherRecipes={otherRecipes} format={format} allRecipesBool={allRecipesBool} timeFilter={timeFilter}
+                isLoading={isLoading} setIsLoading={setIsLoading} searchField={searchField}/>
 }

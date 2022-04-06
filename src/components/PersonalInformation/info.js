@@ -20,14 +20,15 @@ export const PersonalInformation = ({userId, image, mail, name, likes}) => {
             let file = element.files[0];
             let reader = new FileReader();
             reader.onloadend = function() {
-            dispatch(setUserProfileImage(reader.result))
-            Axios.post('https://cookery-app.herokuapp.com/user/image/upload', {
+            Axios.post('/user/image/upload', {
                 imageBase64: reader.result,
+                name: file.name,
                 userId
-            }).then((result) => {console.log(result);})}
+            }).then((result) => {
+                dispatch(setUserProfileImage(result.data))
+            })}
             reader.readAsDataURL(file);
         } catch (err) {
-            console.log(err)
     }}
 
     const handleUploadedFileImage = (e) => {
@@ -55,7 +56,7 @@ export const PersonalInformation = ({userId, image, mail, name, likes}) => {
             <div style={{marginLeft: '2%', marginTop: '3%'}}>
                 <div className='profileImgWrap'>
                     <img className="profileImg" style={{borderRadius: '15px'}}
-                        src={image ? image : "https://picsum.photos/200"} alt='profile' />
+                        src={image ? `/users/${image}` : "https://picsum.photos/200"} alt='profile' />
                     <label htmlFor="file-upload" className="custom-file-upload">
                         Загрузить
                     </label>

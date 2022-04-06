@@ -10,14 +10,13 @@ export const StarredRecipesPage = () => {
     const [emptyRecipes, setEmptyRecipes] = useState(false)
     const dispatch = useDispatch()
     const userData = useSelector((state) => state.user)
-    console.log(userData)
     useEffect(() => {
         if (!userData.likedPostsIdes.length) {
             setEmptyRecipes(true)
             setIsLoading(false)
         } else {
             setIsLoading(true)
-            Axios.get('https://cookery-app.herokuapp.com/starredRecipes/get', {
+            Axios.get('/starredRecipes/get', {
                 params: {
                     recipesIdes: userData.likedPostsIdes
                 }

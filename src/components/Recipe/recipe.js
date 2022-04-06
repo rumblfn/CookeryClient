@@ -59,14 +59,13 @@ const GalleryRight = styled.div`
 const GalleryImagesOnly = styled.div`
     display: grid;
     grid-template-columns: 1fr;
-    gap: 5%;
+    gap: 12px;
     @media (max-width: 628px) {
         grid-template-columns: 1fr 1fr;
     }
 `
 
 export const RecipeInfo = recipesConnect(({page, id, starRecipeRecipe}) => {
-    console.log(page)
     let user = useSelector(state => state.user)
     const [starred, setStarred] = useState(user.likedPostsIdes.indexOf(id) === -1 ? false : true)
     const dispatch = useDispatch()
@@ -79,7 +78,6 @@ export const RecipeInfo = recipesConnect(({page, id, starRecipeRecipe}) => {
     selector = useSelector(state => state.recipes.recipes)
 
     let recipeMain = {};
-    console.log(selector);
 
     for (let recipe in selector) {
         if (recipe == recipeId) {
@@ -91,19 +89,19 @@ export const RecipeInfo = recipesConnect(({page, id, starRecipeRecipe}) => {
     const starFunction = () => {
         if (user.loged) {
             if (starred) {
-                Axios.post('https://cookery-app.herokuapp.com/recipes/likes/update', {
+                Axios.post('/recipes/likes/update', {
                     recipeId: recipeId, type: -1, userId: user.id
-                }).then((response) => {console.log(response)})
+                }).then((response) => {})
             } else {
-                Axios.post('https://cookery-app.herokuapp.com/recipes/likes/update', {
+                Axios.post('/recipes/likes/update', {
                     recipeId: recipeId, type: 1, userId: user.id
-                }).then((response) => {console.log(response)})}
+                }).then((response) => {})}
         
             setStarred(prevState => !prevState)
             dispatch(starRecipeUserReducer({recipeId, starred}))
         }
     }
-
+    console.log(Object.values(recipeMain.images))
     return (
         <div className='container'>
             <Box>
@@ -128,13 +126,14 @@ export const RecipeInfo = recipesConnect(({page, id, starRecipeRecipe}) => {
                             </p>))
                         }
                     </div>
-                    {recipeMain.images.length > 0 ? 
+                    {Object.values(recipeMain.images).length > 0 ? 
                         <Gallery>
                             <h5 style={{borderBottom: '2px solid black', margin: '16px 0'}}>Галлерея</h5>
-                            <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '5%'}}> 
+                            <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px'}}> 
                             {
-                                recipeMain.images.map((item, index) => (
-                                    <img style={{width: '100%', borderRadius: '15px'}} key={`${index}${index}`} src={item} alt='img'/>))
+                                Object.values(recipeMain.images).map((name) => (
+                                    <img style={{width: '100%', height: '100%', objectFit: 'cover', borderRadius: '5px'}} key={name} src={`/reciepes/${name}`} alt='food'/>
+                                ))
                             }
                             </div>
                         </Gallery>
@@ -158,13 +157,14 @@ export const RecipeInfo = recipesConnect(({page, id, starRecipeRecipe}) => {
                             <AccessTimeIcon/>
                         </Button>
                     </div>
-                    {recipeMain.images.length > 0 ? 
+                    {Object.keys(recipeMain.images).length > 0 ? 
                         <GalleryRight>
                             <h5 style={{borderBottom: '2px solid black', margin: '16px 0'}}>Галлерея</h5>
                             <GalleryImagesOnly> 
                             {
-                                recipeMain.images.map((item, index) => (
-                                    <img style={{width: '100%', borderRadius: '15px'}} key={`${index}${index}`} src={item} alt='img'/>))
+                                Object.values(recipeMain.images).map((name) => (
+                                    <img style={{width: '100%', height: '100%', objectFit: 'cover', borderRadius: '5px'}} key={name} src={`/reciepes/${name}`} alt='food'/>
+                                ))
                             }
                             </GalleryImagesOnly>
                         </GalleryRight>
